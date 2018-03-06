@@ -93,9 +93,18 @@ class WSPC_Loader {
 	}
 
 	public static function enqueue_scripts() {
-//		var_dump(plugins_url('/js/wpspc.js', __FILE__));
-//		 exit;
+		if ( is_single() ) {
+			$post    = get_post();
+			$post_id = $post->ID;
+		} else { // シングルじゃないときには動かないようにしておく
+			$post_id = 0;
+		}
+		// @link https://wordpress.stackexchange.com/questions/190297/ajaxurl-not-defined-on-front-end
 		wp_enqueue_script( 'wspc', plugins_url( '/js/wspc.js', __FILE__ ), array( 'jquery' ) );
+		wp_localize_script( 'wspc', 'wspc',
+			array( 'ajax_url' => admin_url( 'admin-ajax.php' ),
+				'post_id' => $post_id,
+			) );
 	}
 
 	/**
@@ -118,12 +127,13 @@ class WSPC_Loader {
 		$count_before = (int) get_post_meta( $post_id, self::POSTMETA_KEY, true );
 		$count        = $count_before + $count_to_up;
 		update_post_meta( $post_id, self::POSTMETA_KEY, $count );
-		$return = array( 'post_id'      => $post_id,
-		                 'count_before' => $count_before,
-		                 'count_to_up'  => $count_to_up,
-		                 'count'        => $count
+		$return = array(
+			'post_id'      => $post_id,
+			'count_before' => $count_before,
+			'count_to_up'  => $count_to_up,
+			'count'        => $count
 		);
-		echo json_encode($return);
+		echo json_encode( $return );
 		wp_die(); // this is required to terminate immediately and return a proper response
 	}
 }
