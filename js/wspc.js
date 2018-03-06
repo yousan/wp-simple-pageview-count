@@ -1,4 +1,4 @@
-var count_range = [5, 10];
+// var count_range = [5, 10];
 
 function wspc_count_up() {
 	if (  parseInt(wspc.post_id) === 0) { // single以外
@@ -6,9 +6,9 @@ function wspc_count_up() {
 	}
 	// カウントアップ数の決定
 	// e.g. count = 800
-	var sub = count_range[1] - count_range[0];
+	var sub = wspc.count_range[1] - wspc.count_range[0];
 	var count = Math.floor(Math.random() * sub); // 最大と最小の差の中での乱数を取得する
-	count += count_range[0]; // 最小側を足して範囲に収める
+	count += wspc.count_range[0]; // 最小側を足して範囲に収める
 	console.log(count);
 	// カウントアップ数が有効か無効かの判定
 	// 1/800 で抽選する
